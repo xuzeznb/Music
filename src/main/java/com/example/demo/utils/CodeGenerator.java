@@ -15,7 +15,7 @@ public class CodeGenerator {
     }
 
     private static void generate(){
-        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3307/aaaa?useSSL=false&useUnicode=true&characterEncoding=utf-8", "root", "xuze20050324")
+        FastAutoGenerator.create("jdbc:mysql://127.0.0.1:3307/xuze?useSSL=false&useUnicode=true&characterEncoding=utf-8", "root", "xuze20050324")
                 .globalConfig(builder -> {
                     builder.author("小泽哥") // 设置作者
                             .enableSwagger() // 开启 swagger 模式

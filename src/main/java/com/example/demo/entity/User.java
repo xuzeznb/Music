@@ -47,7 +47,7 @@ public class User implements Serializable {
       private String role;
 
       @ApiModelProperty("用户Id")
-      private String userid;
+      private String userId;
 
     
 

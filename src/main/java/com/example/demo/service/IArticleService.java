@@ -19,6 +19,7 @@ public interface IArticleService extends IService<Article> {
 
     boolean updateNumById(Article article);
 
+
     Result likeNum(Long id);
 
     ArticleDto article(ArticleDto articleDto);

@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.demo.config.dto.UserDto;
 import com.example.demo.config.dto.UserPasswordDTO;
 import com.example.demo.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.data.domain.Page;
 
 /**
@@ -22,4 +22,5 @@ public interface IUserService extends IService<User> {
 
     Object updatePassword(UserPasswordDTO userPasswordDTO);
     Page<User> findPage(Page<User> page, String username, String userid, String email, String address);
+
 }

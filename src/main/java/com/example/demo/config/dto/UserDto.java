@@ -17,6 +17,7 @@ public class UserDto {
     private String nickname;
     private String token;
     private String role;
+    private String faceUrl;
     private List<Menu> menus;
     private String Userid;
 

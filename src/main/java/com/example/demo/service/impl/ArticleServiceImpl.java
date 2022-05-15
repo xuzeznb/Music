@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.demo.common.Constants;
 import com.example.demo.common.Result;
 import com.example.demo.config.dto.ArticleDto;
-import com.example.demo.config.tool.IDUtil;
+import com.example.demo.config.tool.UUIDUtil;
 import com.example.demo.entity.Article;
 import com.example.demo.exception.ServiceException;
 import com.example.demo.mapper.ArticleMapper;
@@ -44,7 +44,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public ArticleDto article(ArticleDto articleDto) {
-        String articleId = IDUtil.uuid();
+        String articleId = UUIDUtil.getUUID();
         articleDto.setArtId(articleId);
         return articleDto;
     }

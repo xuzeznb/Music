@@ -1,8 +1,8 @@
 package com.example.demo.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.demo.config.dto.UserPasswordDTO;
 import com.example.demo.entity.User;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.data.domain.Page;
@@ -21,4 +21,6 @@ public interface UserMapper extends BaseMapper<User> {
 
     Page<User> findPage(Page<User> page, @Param("username") String username,@Param("userid") String userid,
                         @Param("email") String email, @Param("address") String address);
+
+
 }
