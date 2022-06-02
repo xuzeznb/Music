@@ -1,8 +1,8 @@
 const routes = [
     {
-        name: 'content',
-        path: '/content',
-        component: () => import('../view/content.vue')
+        name: 'mymusic',
+        path: '/mymusic',
+        component: () => import('../view/mymusic.vue')
     },
     {
         name: 'header',
