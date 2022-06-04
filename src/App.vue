@@ -6,14 +6,15 @@
 
 <script lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
+import Music from './components/music.vue'
 export default{
   components:{
-  HelloWorld
-  },
+    HelloWorld,
+    Music
+},
 setup(){
-const syahoew ="Hello Vue 3 + TypeScript + Vite"
 return{
-  syahoew
+
 }
 }
 

@@ -5,9 +5,12 @@
     </el-col>
     <el-col :span="6">
       <div style="line-height: 20px;display: flex;justify-content: center;">
-        <router-link to="mymusic" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">我的</router-link>
-        <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">推荐</router-link>
-        <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">动态</router-link>
+        <router-link to="mymusic" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">我的
+        </router-link>
+        <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">推荐
+        </router-link>
+        <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">动态
+        </router-link>
       </div>
     </el-col>
     <el-col :span="6" style="line-height:60px;">
@@ -20,8 +23,8 @@
         <a style="padding: 5px;" href="javascript:;" @click="openlogin" v-if="login"> 登录</a>
         <el-dropdown>
           <el-image v-if="!login" :src="user.avatarUrl" style="width:50px ;height:50px;border-radius: 50%;"></el-image>
-          <a style="color:black;text-decoration: none;padding: 5px;" href="javascript:;"  v-if="!login" >{{ user.nickname }} <el-icon
-              class="el-icon--right" color="black">
+          <a style="color:black;text-decoration: none;padding: 5px;" href="javascript:;" v-if="!login">{{ user.nickname
+          }} <el-icon class="el-icon--right" color="black">
               <arrow-down />
             </el-icon></a>
           <!-- 下拉菜单 -->
@@ -44,7 +47,8 @@
                 </div>
               </el-form>
             </el-tab-pane>
-            <el-tab-pane label="扫码登陆" name="second">Config</el-tab-pane>
+            <el-tab-pane label="扫码登陆" name="second">
+            </el-tab-pane>
             <el-tab-pane label="手机号登录" name="third">Role</el-tab-pane>
             <el-tab-pane label="第三方登录" name="fourth">Task</el-tab-pane>
           </el-tabs>
@@ -53,14 +57,15 @@
       </span>
     </el-col>
   </div>
+  <Music />
 </template>
 <script setup lang="ts">
 // 传值模板
 import { ref, reactive } from 'vue'
-import router from '../router';
 import store from '../store/index';
 import request from '../config/request'
 import { ElMessage } from 'element-plus';
+import Music from './music.vue';
 // 显示状态栏中的用户头像
 const user: any = store.state.userInfo
 // 默认登录窗不弹出
@@ -71,6 +76,8 @@ const activeName = ref("first")
 const openlogin = () => {
   dialogTableVisible.value = true
 }
+// 时间戳
+console.log(new Date().getTime())
 // 表单验证接口
 interface userInfo {
   phone: any
@@ -88,7 +95,6 @@ const logimrole = reactive({
 })
 //获取登录状态
 const login = store.state.login
-// defineProps<{msg:string}>()
 // 定义登录接口
 const sign = () => {
   request.post("/login/cellphone", loginForm).then(res => {
@@ -101,22 +107,21 @@ const sign = () => {
     }
   })
 }
+request.get("/login/status")
 // 退出登录
 const logout = () => {
-
   request.get("/logout").then(res => {
     if (res.data.code == '200') {
-    store.commit("userInfo",'')
+      store.commit("userInfo", '')
+      localStorage.removeItem('cookie')
       ElMessage.success("退出成功")
       store.commit("login", true)
     }
     location.reload()
   })
 }
-const state = reactive({
-  nickname: '',
-  avatarUrl: ''
-})
+
+
 </script>
 <style scoped>
 span {
