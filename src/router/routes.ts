@@ -2,24 +2,24 @@ const routes = [
     {
         name: 'mymusic',
         path: '/mymusic',
-        component: () => import('../view/mymusic.vue')
+        component: () => import('../view/mymusic.vue'),
     },
     {
-        name: 'header',
-        path: '/header',
-        component: () => import('../view/header.vue')
+        name: 'album',
+        path: '/album',
+        component: () => import('../view/album.vue')
     },
     {
-        name:'search',
-        path:'/search',
+        name: 'search',
+        path: '/search',
         component: () => import('../view/search.vue')
     },
     {
-        name:'songlist',
-        path:'/songlist',
+        name: 'songlist',
+        path: '/songlist',
         component: () => import('../view/songlist.vue')
     }
-    
+
 ];
- 
+
 export default routes

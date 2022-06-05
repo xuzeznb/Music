@@ -1,7 +1,7 @@
 <template>
   <div style="height: 60px;width: 100%;display: flex;justify-content: center;">
     <el-col :span="6" style="display:flex;justify-content: center;">
-      <h2 style="line-height: 30px;">网易云音乐</h2>
+      <h2 style="line-height: 60px;">网易云音乐</h2>
     </el-col>
     <el-col :span="6">
       <div style="line-height: 20px;display: flex;justify-content: center;">
@@ -15,7 +15,7 @@
     </el-col>
     <el-col :span="6" style="line-height:60px;">
       <span style="width:80px;">
-        <el-input type="text" style="width:200px;" placeholder="请输入搜索的歌曲"></el-input>
+        <el-input type="text" style="width:200px;"   placeholder-class="el-icon-search" placeholder="请输入搜索的歌曲"></el-input>
       </span>
     </el-col>
     <el-col :span="6" style="line-height:50px;">
@@ -65,7 +65,6 @@ import { ref, reactive } from 'vue'
 import store from '../store/index';
 import request from '../config/request'
 import { ElMessage } from 'element-plus';
-import Music from './music.vue';
 // 显示状态栏中的用户头像
 const user: any = store.state.userInfo
 // 默认登录窗不弹出

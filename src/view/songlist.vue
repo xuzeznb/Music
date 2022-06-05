@@ -51,14 +51,36 @@
         <el-col :span="24" style="margin-top: 40px;">
           <el-tabs v-model="activeName" class="demo-tabs">
             <el-tab-pane label="音乐列表" name="first">
-              <el-table :data="state.tableData" ref="table" height="550" v-loading="state.loading"
+              <el-table :data="state.tableData" ref="table"  height="550" v-loading="state.loading"
                 element-loading-text="加载中..." :element-loading-spinner="svg"
                 element-loading-svg-view-box="-10, -10, 50, 50" element-loading-background="rgba(122, 122, 122, 0.8)"
                 :max-height="heght" style="width: 100%">
-                <el-table-column prop="id" label="歌曲ID" width="180" />
-                <el-table-column prop="name" label="歌单" width="180" />
-                <el-table-column prop="ar[0].name" label="作者" width="180" />
-                <el-table-column prop="al.name" label="专辑" width="180" />
+                <el-table-column type="index" width="50">
+                </el-table-column>
+                <el-table-column prop="name" :show-overflow-tooltip="true" label="歌单" width="200">
+                </el-table-column>
+                <el-table-column label="作者" width="280">
+                  <template #default="aaaa">
+                    <div v-for="a in aaaa.row.ar" :key="a" class="author">
+                      <a href="javascript:;" style="float: left;text-decoration: none;color:#606266;">{{a.name+"~"}}</a>
+                    </div>
+                  </template>
+
+                </el-table-column>
+                <el-table-column label="是否原唱" width="180">
+                  <template #default="scope">
+                    <div v-if="scope.row.originCoverType == 1">
+                      原创
+                    </div>
+                    <div v-if="scope.row.originCoverType == 2">
+                      翻唱
+                    </div>
+                    <div v-if="scope.row.originCoverType == 0">
+                      未知
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="al.name"  :show-overflow-tooltip="true" label="专辑" width="180" />
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
@@ -115,8 +137,7 @@ request.get("/playlist/detail?id=" + id).then(res => {
     state.identityIconUrl = playlist.creator.avatarDetail.identityIconUrl
   }
   state.nickname = playlist.creator.nickname
-  state.playCount =playlist.playCount 
-  const aaaaa = playlist.playCount
+  state.playCount = playlist.playCount
   state.description = playlist.description
   state.tags = playlist.tags
 })

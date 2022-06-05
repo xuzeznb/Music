@@ -1,0 +1,115 @@
+<template>
+  <div style="display:flex ;justify-content: center;width: 100%;">
+    <div style="width: 1000px;height: 500px;padding-top: 20px;">
+      <el-row>
+        <el-col :span="6">
+          <el-image :src="state.picUrl" style="width: 200px;height: 200px;float: right;" />
+        </el-col>
+        <el-col :span="18">
+          <h3 style="margin-top: 5px;padding-left:20px;">
+            <a style="border:1px solid orange ; color: orange;font-size: 15px;padding: 0 5px;border-radius: 10%;">专辑</a>
+            {{ state.title }}
+          </h3>
+          <div style="padding-left:15px; ">
+            <div>
+              <!-- TODO: 主页的跳转 -->
+              <span style="font-size: 15px;">歌手:</span>
+              <a href="JavaScript:;" style="text-decoration:none;font-size: 15px; padding: 0 15px;">{{
+                  state.nickname
+              }}</a>
+            </div>
+          </div>
+          <div style="padding-top:15px;height: 105px; overflow: hidden;">
+            <span style="padding-left: 15px;">
+              <el-button><a v-if="star">
+                  <IconStar />收藏
+                </a><a v-if="!star">
+                  <IconStar2 />已收藏
+                </a></el-button>
+              <el-button>
+                <el-icon>
+                  <Share />
+                </el-icon> 分享
+              </el-button>
+            </span>
+            <br />
+          </div>
+        </el-col>
+        <el-col :span="24" style="margin-top: 40px;">
+          <el-tabs v-model="activeName" class="demo-tabs">
+            <el-tab-pane label="专辑列表" name="first">
+              <el-table :data="state.tableData" ref="table" height="550" v-loading="state.loading"
+                element-loading-text="加载中..." :element-loading-spinner="svg"
+                element-loading-svg-view-box="-10, -10, 50, 50" element-loading-background="rgba(122, 122, 122, 0.8)"
+                :max-height="heght" style="width: 100%">
+                <el-table-column type="index" width="50" />
+                <el-table-column prop="name" :show-overflow-tooltip="true" label="歌单" width="200">
+                </el-table-column>
+                <el-table-column label="作者" width="280">
+                  <template #default="aaaa">
+                    <div v-for="a in aaaa.row.ar" :key="a" class="author">
+                      <a href="javascript:;" style="float: left;text-decoration: none;color:#606266;">{{ a.name + "~"
+                      }}</a>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="al.name" :show-overflow-tooltip="true" label="专辑" width="180" />
+              </el-table>
+            </el-tab-pane>
+            <el-tab-pane label="专辑评论" name="second">
+            </el-tab-pane>
+          </el-tabs>
+        </el-col>
+      </el-row>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { reactive, ref } from "vue-demi"
+import { useRoute } from "vue-router"
+import IconStar2 from '../components/icon/icon-star2.vue';
+import IconStar from '../components/icon/icon-star.vue';
+import request from "../config/request"
+import { onMounted } from "vue";
+
+const route = useRoute()
+const id = route.query.id
+const activeName = ref('first')
+const star = ref(true)
+const svg = `
+        <path class="path" d="
+          M 30 15
+          L 28 17
+          M 25.61 25.61
+          A 15 15, 0, 0, 1, 15 30
+          A 15 15, 0, 1, 1, 27.99 7.5
+          L 15 15
+        " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
+      `
+onMounted(() => {
+  state.loading = ref(true)
+  setTimeout(() => {
+    state.loading = false
+  }, 2000)
+})
+request.get("/album?id=" + id).then(res => {
+  state.title = res.data.album.name
+  state.picUrl = res.data.album.picUrl
+  state.nickname = res.data.album.artists[0].name
+  state.tableData = res.data.songs
+})
+const heght = "500px"
+
+const state: any = reactive({
+  title: '',
+  tableData: [],
+  picUrl: '',
+  nickname: '',
+  loading: ''
+})
+
+</script>
+
+<style>
+</style>

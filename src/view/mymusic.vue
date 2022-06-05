@@ -16,6 +16,7 @@
                   background-color: blue;
                 ">
                 <iconPlay v-if="play" style="margin-left: 10px; margin-top: 10px" />
+                <!-- <audio :ref="audio" :src="songUrl"></audio> -->
               </span>
             </div>
           </div>
@@ -41,15 +42,15 @@
         </div>
       </div>
     </el-col>
-    <el-col :span="24">
-      <div>
-        <h2 style="width: 350px; display: flex; justify-content: center">
-          歌单推荐
-        </h2>
+     <el-col :span="24">
+      <div style="width: 100%;">
+      <div style="display: flex;width: 500px; justify-content: center;">
+        <h2 style="margin-bottom: 20px;">最新歌单</h2>
+      </div>
         <div style="display: flex; justify-content: center">
-          <div style="width: 1500px; height: 500px">
+          <div style="width: 1300px; height: 500px">
             <div v-for="itemlist in state.sentlist" :key="itemlist.id">
-              <div style="float: left; width: 300px; height: 270px">
+              <div style="float: left; width: 250px; height: 270px">
                 <el-image :src="itemlist.picUrl" style="
                     width: 200px;
                     height: 200px;
@@ -66,6 +67,31 @@
         </div>
       </div>
     </el-col>
+    <el-col :span="24" style="margin-top: 60px;">
+       <div style="width: 100%;">
+        <div style="display: flex;width: 500px; justify-content: center;">
+        <h2 style="margin-bottom: 20px;">最新专辑</h2>
+      </div>
+        <div style="display: flex; justify-content: center">
+          <div style="width: 1300px; height: 500px">
+            <div v-for="items in state.Album" :key="items.id">
+              <div style="float: left; width: 250px; height: 270px">
+                <el-image :src="items.picUrl" style="
+                    width: 200px;
+                    height: 200px;
+                    border-radius: 10%;
+                    margin-bottom: 5px;
+                  "></el-image>
+                <div style="height: 60px; width: 200px">
+                  <router-link :to="`/album?id=${items.id}`" href="javascript:;"
+                    style="color: black; text-decoration: none">{{ items.name }}</router-link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> 
+    </el-col>
   </el-row>
 </template>
 <script lang="ts">
@@ -74,6 +100,7 @@ import iconPlay from "../components/icon/icon-play.vue";
 import request from "../config/request";
 import store from "../store";
 import music from "../components/music.vue";
+import { useRouter } from 'vue-router';
 export default {
   components: {
     iconPlay,
@@ -105,10 +132,15 @@ export default {
       }
       state.sentlist = reclist.splice(0, 10);
     });
-    const state = reactive({
+    request.get("/album/newest").then(res=>{
+      const a = res.data.albums
+      state.Album=a.splice(0,10)
+    })
+    const state: any = reactive({
       songslist: "",
       sentlist: "",
       songid: "",
+      Album:''
     });
     return {
       play,
@@ -124,5 +156,11 @@ export default {
   width: 300px;
   height: 140px;
   border-radius: 10%;
+}
+
+.star-song a {
+  border: none;
+  padding: 0 20px;
+  font-size: 13px;
 }
 </style>
