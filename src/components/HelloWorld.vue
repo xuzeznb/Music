@@ -1,7 +1,7 @@
 <template>
   <div style="height: 60px;width: 100%;display: flex;justify-content: center;">
     <el-col :span="6" style="display:flex;justify-content: center;">
-      <h2 style="line-height: 60px;">网易云音乐</h2>
+      <h2 style="line-height: 30px;">网易云音乐</h2>
     </el-col>
     <el-col :span="6">
       <div style="line-height: 20px;display: flex;justify-content: center;">
@@ -15,7 +15,8 @@
     </el-col>
     <el-col :span="6" style="line-height:60px;">
       <span style="width:80px;">
-        <el-input type="text" style="width:200px;"   placeholder-class="el-icon-search" placeholder="请输入搜索的歌曲"></el-input>
+        <el-input type="text" style="width:200px;" placeholder-class="el-icon-search" :prefix-icon="Search"
+          @keyup.enter="search" placeholder="请输入搜索的歌曲"></el-input>
       </span>
     </el-col>
     <el-col :span="6" style="line-height:50px;">
@@ -34,6 +35,10 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <el-dialog v-model="loginVisible" width="30%" title="请验证您的账号！">
+          <h4 style="display: flex;justify-content: center; ">请你打开网易云音乐app进行扫码验证 </h4>
+        <qrcode-vue :value="state.codeUrl" :size="400" level="H" />
+        </el-dialog>
         <!-- 登录弹出框 -->
         <el-dialog v-model="dialogTableVisible" width="30%">
           <el-tabs v-model="activeName">
@@ -49,7 +54,17 @@
             </el-tab-pane>
             <el-tab-pane label="扫码登陆" name="second">
             </el-tab-pane>
-            <el-tab-pane label="手机号登录" name="third">Role</el-tab-pane>
+            <el-tab-pane label="邮箱登录" name="third">
+              <el-form :model="emailForm" ref="from" :rules="emailmrole">
+                <el-input type="text" v-model="emailForm.email" placeholder="请输入邮箱" />
+                <el-input type="password" v-model.number="emailForm.password" placeholder="请输入密码" />
+              </el-form>
+              <div style="display:flex;justify-content: center;">
+                <el-button type="success" @click="emaillogin">登录</el-button>
+                <el-button>取消</el-button>
+              </div>
+            </el-tab-pane>
+
             <el-tab-pane label="第三方登录" name="fourth">Task</el-tab-pane>
           </el-tabs>
         </el-dialog>
@@ -60,11 +75,26 @@
   <Music />
 </template>
 <script setup lang="ts">
-// 传值模板
 import { ref, reactive } from 'vue'
 import store from '../store/index';
+import { Search } from '@element-plus/icons-vue'
+import QrcodeVue from 'qrcode.vue'
 import request from '../config/request'
 import { ElMessage } from 'element-plus';
+const state: any = reactive({
+  yzurl: ''
+})
+    const size = ref<string>("180");
+const loginVisible = ref(false)
+request.get("/login/status").then(res => {
+}).catch((error) => {
+  loginVisible.value = true
+ state. codeUrl = error.response.data.data.url; 
+  state.yzurl = error.response.data.data.url
+})
+const search = () => {
+  console.log("我被调用，马上进行搜索~~")
+}
 // 显示状态栏中的用户头像
 const user: any = store.state.userInfo
 // 默认登录窗不弹出
@@ -82,14 +112,28 @@ interface userInfo {
   phone: any
   password: any
 }
+interface emailInfo {
+  email: '',
+  password: ''
+}
 // 表单验证
 const loginForm: userInfo = reactive({
   phone: '',
   password: ''
 })
+// 邮箱表单
+const emailForm: emailInfo = reactive({
+  email: '',
+  password: ''
+})
 // 验证手机规则
 const logimrole = reactive({
   phone: [{ required: 'true', message: '请输入合法电话', trigger: 'blur', pattern: "/^\d{15,17}$/" }],
+  password: [{}]
+})
+// 验证账号规则
+const emailmrole = reactive({
+  email: [{}],
   password: [{}]
 })
 //获取登录状态
@@ -106,7 +150,8 @@ const sign = () => {
     }
   })
 }
-request.get("/login/status")
+
+
 // 退出登录
 const logout = () => {
   request.get("/logout").then(res => {
@@ -119,7 +164,20 @@ const logout = () => {
     location.reload()
   })
 }
+const emaillogin = () => {
+  request.post("/login", emailForm).then(res => {
+    dialogTableVisible.value = false
+    console.log(res)
+    store.commit("userInfo", res.data.profile)
+    store.commit("login", false)
+    dialogTableVisible.value = false
+    location.reload()
 
+  })
+  const state: any = reactive({
+    loginUrl: ''
+  })
+}
 
 </script>
 <style scoped>
@@ -134,3 +192,7 @@ span>a {
   padding: 10px;
 }
 </style>
+
+function qrcode(record: any) {
+  throw new Error('Function not implemented.');
+}

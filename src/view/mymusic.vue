@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row v-if="cookie!=null">
     <el-col :span="12">
       <div class="grid-content bg-purple" style="display: flex; justify-content: center; margin-top: 60px">
         <div class="auioplay">
@@ -146,6 +146,7 @@ export default {
       play,
       state,
       songplay,
+      cookie,
     };
   },
 };

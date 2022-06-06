@@ -3,7 +3,7 @@
     <div style="width: 1000px;height: 500px;padding-top: 20px;">
       <el-row>
         <el-col :span="6">
-          <el-image :src="state.avatarUrl" style="width: 200px;height: 200px;float: right;" />
+          <el-image  :src="state.avatarUrl" style="width: 200px;height: 200px;float: right;" />
         </el-col>
         <el-col :span="18">
           <h3 style="margin-top: 5px;padding-left:20px;height: 40px;">
@@ -17,10 +17,10 @@
               <el-image v-if="state.identityIconUrl != null" :src="state.identityIconUrl"
                 style="width:15px;height: 15px;margin-top: 15px;position:absolute;top:45px;left:285px;" />
               <!-- TODO: 主页的跳转 -->
-              <a href="JavaScript:;"
-                style="text-decoration:none;line-height: 30px; font-size: 15px; padding: 0 15px;">{{
+              <router-link :to="`/userInfo?id=${state.userId}`"
+                style="text-decoration:none;line-height: 30px; font-size: 15px; padding: 0 5px;">{{
                     state.nickname
-                }}</a>
+                }}</router-link>
             </div>
             <div style="padding-top:15px;height: 105px; overflow: hidden;">
               <span>
@@ -37,7 +37,7 @@
               </span>
               <br />
               <span style="margin-top:5px;line-height: 25px;">
-                <a style="font-size:13px;">标签：</a>
+                <a style="font-size:13px;" v-if="state.tags=null">标签：</a>
                 <a href="JavaScript:;" v-for="tag in state.tags" :key="tag.id"
                   style="text-decoration: none;font-size: 13px;color: blue;"> {{ tag + "、" }}</a>
                 <br />
@@ -49,7 +49,7 @@
           </div>
         </el-col>
         <el-col :span="24" style="margin-top: 40px;">
-          <el-tabs v-model="activeName" class="demo-tabs">
+          <el-tabs lazy v-model="activeName" class="demo-tabs">
             <el-tab-pane label="音乐列表" name="first">
               <el-table :data="state.tableData" ref="table"  height="550" v-loading="state.loading"
                 element-loading-text="加载中..." :element-loading-spinner="svg"
@@ -59,13 +59,12 @@
                 </el-table-column>
                 <el-table-column prop="name" :show-overflow-tooltip="true" label="歌单" width="200">
                 </el-table-column>
-                <el-table-column label="作者" width="280">
+                <el-table-column label="作者(点击名字即可跳转主页)" width="280">
                   <template #default="aaaa">
                     <div v-for="a in aaaa.row.ar" :key="a" class="author">
                       <a href="javascript:;" style="float: left;text-decoration: none;color:#606266;">{{a.name+"~"}}</a>
                     </div>
                   </template>
-
                 </el-table-column>
                 <el-table-column label="是否原唱" width="180">
                   <template #default="scope">
@@ -84,6 +83,9 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
+              <span>
+
+              </span>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -121,14 +123,15 @@ let route = useRoute();
 const table: any = ref(null)
 console.log(table)
 let id = route.query.id
+let cookie = localStorage.cookie
 const time = new Date().getTime()
 // 获取歌单的全部歌曲
-request.get("/playlist/track/all?id=" + id).then(res => {
+request.get("/playlist/track/all?cookie="+cookie+"&id="+id).then(res => {
   state.songlength = res.data.songs.length
   state.tableData = res.data.songs
 })
 // 获取歌单详细信息
-request.get("/playlist/detail?id=" + id).then(res => {
+request.get("/playlist/detail?id=" + id +"&cookie="+cookie).then(res => {
   const playlist = res.data.playlist
   state.playlist = playlist.name
   state.avatarUrl = playlist.coverImgUrl
@@ -140,6 +143,10 @@ request.get("/playlist/detail?id=" + id).then(res => {
   state.playCount = playlist.playCount
   state.description = playlist.description
   state.tags = playlist.tags
+  state.userId = playlist.creator.userId
+})
+request.get("/comment/playlist?id=" + id ).then(res=>{
+
 })
 </script>
 <style>
