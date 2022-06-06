@@ -1,5 +1,7 @@
 # 仿网易云音乐项目
-后端来源于GitHub https://github.com/Binaryify/NeteaseCloudMusicApi
+后端来源于GitHub
+感谢作者提供接口
+感谢特别感谢 @Binaryify [后端源码](https://github.com/Binaryify/NeteaseCloudMusicApi) 
 
 #### 技术栈
   * vue3：采用最新的vue3语法
@@ -11,7 +13,6 @@
   * css3: css预处理语言
   * typescript: 采用ts语法 
 #### 功能介绍
-  ```v1.0| 2022/6/1```
  * 搜索 -- >搜索 单曲、歌手
  * 音乐播放功能-->单页面支持，还未完善
  * 热门歌单

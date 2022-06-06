@@ -37,7 +37,7 @@
               </span>
               <br />
               <span style="margin-top:5px;line-height: 25px;">
-                <a style="font-size:13px;" v-if="state.tags=null">标签：</a>
+                <a style="font-size:13px;">标签：</a>
                 <a href="JavaScript:;" v-for="tag in state.tags" :key="tag.id"
                   style="text-decoration: none;font-size: 13px;color: blue;"> {{ tag + "、" }}</a>
                 <br />
