@@ -4,7 +4,8 @@ export default createStore({
     plugins:[createPrrsistedState()],
     state:{
         login:true,
-        userInfo:''
+        userInfo:'',
+        dialogTableVisible:false,
     },
     mutations:{
         login(state,value){
@@ -12,6 +13,9 @@ export default createStore({
         },
         userInfo(state,value){
             state.userInfo=value
+        },
+        loginSwitch(state,value){
+            state.dialogTableVisible = value
         }
     },
     actions:{

@@ -62,7 +62,7 @@
                 <el-table-column label="作者(点击名字即可跳转主页)" width="280">
                   <template #default="aaaa">
                     <div v-for="a in aaaa.row.ar" :key="a" class="author">
-                      <a href="javascript:;" style="float: left;text-decoration: none;color:#606266;">{{a.name+"~"}}</a>
+                      <router-link :to="`/singer?id=${a.id}`" style="float: left;text-decoration: none;color:#606266;">{{a.name+"~"}}</router-link>
                     </div>
                   </template>
                 </el-table-column>
@@ -83,9 +83,14 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
-              <span>
-
-              </span>
+              <div>
+                <span>
+                  <h4>精彩评论</h4>
+                  <div v-for="content in state.hotComments">
+                    <el-image :src="content.user.avatarUrl" style="width: 200px;"></el-image>
+                  </div>
+                </span>
+              </div>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -116,7 +121,7 @@ const svg = `
           L 15 15
         " style="stroke-width: 4px; fill: rgba(0, 0, 0, 0)"/>
       `
-const activeName = ref('first')
+const activeName = ref('second')
 const star = ref(true)
 const heght = ref()
 let route = useRoute();
@@ -127,26 +132,32 @@ let cookie = localStorage.cookie
 const time = new Date().getTime()
 // 获取歌单的全部歌曲
 request.get("/playlist/track/all?cookie="+cookie+"&id="+id).then(res => {
-  state.songlength = res.data.songs.length
-  state.tableData = res.data.songs
+  if(res.data.code== 200) {
+    if (res.data.songs) {
+      state.songlength = res.data.songs.length
+    }
+    state.tableData = res.data.songs
+  }
 })
 // 获取歌单详细信息
 request.get("/playlist/detail?id=" + id +"&cookie="+cookie).then(res => {
-  const playlist = res.data.playlist
-  state.playlist = playlist.name
-  state.avatarUrl = playlist.coverImgUrl
-  state.useravatarUrl = playlist.creator.avatarUrl
-  if (playlist.creator.avatarDetail) {
-    state.identityIconUrl = playlist.creator.avatarDetail.identityIconUrl
+  if(res.data.code== 200) {
+    const playlist = res.data.playlist
+    state.playlist = playlist.name
+    state.avatarUrl = playlist.coverImgUrl
+    state.useravatarUrl = playlist.creator.avatarUrl
+    if (playlist.creator.avatarDetail) {
+      state.identityIconUrl = playlist.creator.avatarDetail.identityIconUrl
+    }
+    state.nickname = playlist.creator.nickname
+    state.playCount = playlist.playCount
+    state.description = playlist.description
+    state.tags = playlist.tags
+    state.userId = playlist.creator.userId
   }
-  state.nickname = playlist.creator.nickname
-  state.playCount = playlist.playCount
-  state.description = playlist.description
-  state.tags = playlist.tags
-  state.userId = playlist.creator.userId
 })
 request.get("/comment/playlist?id=" + id ).then(res=>{
-
+state.hotComments =res.data.hotComments
 })
 </script>
 <style>

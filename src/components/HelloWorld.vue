@@ -1,13 +1,13 @@
 <template>
   <div style="height: 60px;width: 100%;display: flex;justify-content: center;">
     <el-col :span="6" style="display:flex;justify-content: center;">
-      <h2 style="line-height: 30px;">网易云音乐</h2>
+      <h2 style="margin-top: 20px;">网易云音乐</h2>
     </el-col>
     <el-col :span="6">
       <div style="line-height: 20px;display: flex;justify-content: center;">
         <router-link to="mymusic" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">我的
         </router-link>
-        <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">推荐
+        <router-link to="recommend" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">推荐
         </router-link>
         <router-link to="" style="padding: 25px;color:black; text-decoration: none;" href="javascript:;">动态
         </router-link>
@@ -24,8 +24,8 @@
         <a style="padding: 5px;" href="javascript:;" @click="openlogin" v-if="login"> 登录</a>
         <el-dropdown>
           <el-image v-if="!login" :src="user.avatarUrl" style="width:50px ;height:50px;border-radius: 50%;"></el-image>
-          <a style="color:black;text-decoration: none;padding: 5px;" href="javascript:;" v-if="!login">{{ user.nickname
-          }} <el-icon class="el-icon--right" color="black">
+          <a style="color:black;text-decoration: none;padding: 5px;" v-if="!login">{{user.nickname}}
+            <el-icon class="el-icon--right" color="black">
               <arrow-down />
             </el-icon></a>
           <!-- 下拉菜单 -->
@@ -40,7 +40,7 @@
         <qrcode-vue :value="state.codeUrl" :size="400" level="H" />
         </el-dialog>
         <!-- 登录弹出框 -->
-        <el-dialog v-model="dialogTableVisible" width="30%">
+        <el-dialog v-model="store.state.dialogTableVisible" width="30%">
           <el-tabs v-model="activeName">
             <el-tab-pane label="账号登录" name="first">
               <el-form :model="loginForm" ref="from" :rules="logimrole">
@@ -48,7 +48,7 @@
                 <el-input type="password" v-model="loginForm.password" placeholder="请输入密码" />
                 <div style="display:flex;justify-content: center;">
                   <el-button type="success" @click="sign">登录</el-button>
-                  <el-button>取消</el-button>
+                  <el-button @click="loginCancel">取消</el-button>
                 </div>
               </el-form>
             </el-tab-pane>
@@ -84,12 +84,13 @@ import { ElMessage } from 'element-plus';
 const state: any = reactive({
   yzurl: ''
 })
-    const size = ref<string>("180");
+const cookie = localStorage.cookie
+const size = ref<string>("180");
 const loginVisible = ref(false)
 request.get("/login/status").then(res => {
 }).catch((error) => {
   loginVisible.value = true
- state. codeUrl = error.response.data.data.url; 
+ state.codeUrl = error.response.data.data.url;
   state.yzurl = error.response.data.data.url
 })
 const search = () => {
@@ -97,13 +98,14 @@ const search = () => {
 }
 // 显示状态栏中的用户头像
 const user: any = store.state.userInfo
-// 默认登录窗不弹出
-const dialogTableVisible = ref(false)
 // 默认显示第一个
 const activeName = ref("first")
 // 定义登录按钮
 const openlogin = () => {
-  dialogTableVisible.value = true
+  store.commit("loginSwitch",true)
+}
+const loginCancel =()=>{
+  store.commit("loginSwitch",false)
 }
 // 时间戳
 console.log(new Date().getTime())
@@ -145,7 +147,7 @@ const sign = () => {
     if (res.data.code == 200) {
       store.commit("userInfo", res.data.profile)
       store.commit("login", false)
-      dialogTableVisible.value = false
+      store.commit("loginSwitch",false)
       location.reload()
     }
   })
@@ -166,11 +168,11 @@ const logout = () => {
 }
 const emaillogin = () => {
   request.post("/login", emailForm).then(res => {
-    dialogTableVisible.value = false
+    store.commit("loginSwitch",false)
     console.log(res)
     store.commit("userInfo", res.data.profile)
     store.commit("login", false)
-    dialogTableVisible.value = false
+    store.commit("loginSwitch",false)
     location.reload()
 
   })

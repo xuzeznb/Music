@@ -2,9 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/demo" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/demo/My-blog" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/part3" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vue-project" vcs="Git" />
   </component>
 </project>
