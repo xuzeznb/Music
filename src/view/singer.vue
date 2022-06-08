@@ -21,7 +21,7 @@
   <h2>{{state.name}}</h2>
   <div>
   <el-button style="border-radius:40px;" @click="star"><el-icon><Star /></el-icon>收藏</el-button>
-  <el-button style="border-radius:40px;" @click="home"><el-icon><User /></el-icon>个人主页</el-button>
+      <el-button style="border-radius:40px;" @click="home" ><router-link :to="`/userInfo?id=${id}`" style="color: black;text-decoration: none"><el-icon><User /></el-icon>个人主页</router-link></el-button>
   </div>
   <div style="margin-top: 20px;font-size: 13px">
     <a >单曲数:{{}}</a>

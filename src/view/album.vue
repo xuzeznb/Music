@@ -14,9 +14,9 @@
             <div>
               <!-- TODO: 主页的跳转 -->
               <span style="font-size: 15px;">歌手:</span>
-              <a href="JavaScript:;" style="text-decoration:none;font-size: 15px; padding: 0 15px;">{{
+              <router-link :to="`/singer?id=${state.id}`"  style="text-decoration:none;cursor:pointer; font-size: 15px; padding: 0 15px;">{{
                   state.nickname
-              }}</a>
+              }}</router-link>
             </div>
           </div>
           <div style="padding-top:15px;height: 105px; overflow: hidden;">
@@ -97,7 +97,9 @@ request.get("/album?id=" + id).then(res => {
   state.title = res.data.album.name
   state.picUrl = res.data.album.picUrl
   state.nickname = res.data.album.artists[0].name
+  state.id=res.data.album.artists[0].id
   state.tableData = res.data.songs
+
 })
 const heght = "500px"
 

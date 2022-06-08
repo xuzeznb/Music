@@ -5,7 +5,7 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import store from './store/index'
 import music from './components/music.vue'
-const app = createApp(App)
+const app:any = createApp(App)
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 app.use(ElementPlus)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

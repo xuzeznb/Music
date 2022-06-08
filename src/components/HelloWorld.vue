@@ -15,13 +15,13 @@
     </el-col>
     <el-col :span="6" style="line-height:60px;">
       <span style="width:80px;">
-        <el-input type="text" style="width:200px;" placeholder-class="el-icon-search" :prefix-icon="Search"
+        <el-input type="text" style="width:200px;border-radius:10px" placeholder-class="el-icon-search" :prefix-icon="Search"
           @keyup.enter="search" placeholder="请输入搜索的歌曲"></el-input>
       </span>
     </el-col>
     <el-col :span="6" style="line-height:50px;">
-      <span>
-        <a style="padding: 5px;" href="javascript:;" @click="openlogin" v-if="login"> 登录</a>
+      <span >
+        <a style="padding-right: 15px;" href="javascript:;" @click="openlogin" v-if="login"> 登录</a>
         <el-dropdown>
           <el-image v-if="!login" :src="user.avatarUrl" style="width:50px ;height:50px;border-radius: 50%;"></el-image>
           <a style="color:black;text-decoration: none;padding: 5px;" v-if="!login">{{user.nickname}}
@@ -35,12 +35,8 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-dialog v-model="loginVisible" width="30%" title="请验证您的账号！">
-          <h4 style="display: flex;justify-content: center; ">请你打开网易云音乐app进行扫码验证 </h4>
-        <qrcode-vue :value="state.codeUrl" :size="400" level="H" />
-        </el-dialog>
         <!-- 登录弹出框 -->
-        <el-dialog v-model="store.state.dialogTableVisible" width="30%">
+        <el-dialog v-model="store.state.dialogTableVisible" :close-on-click-modal="false" :show-close="false" :close-on-press-escape="false" width="30%">
           <el-tabs v-model="activeName">
             <el-tab-pane label="账号登录" name="first">
               <el-form :model="loginForm" ref="from" :rules="logimrole">
@@ -71,8 +67,8 @@
         <a style="padding: 5px;" href="javascript:;" v-if="login">注册</a>
       </span>
     </el-col>
+    <Music/>
   </div>
-  <Music />
 </template>
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
@@ -86,12 +82,8 @@ const state: any = reactive({
 })
 const cookie = localStorage.cookie
 const size = ref<string>("180");
-const loginVisible = ref(false)
-request.get("/login/status").then(res => {
-}).catch((error) => {
-  loginVisible.value = true
- state.codeUrl = error.response.data.data.url;
-  state.yzurl = error.response.data.data.url
+request.get("/login/status").then().catch((error) => {
+  ElMessage.error("系统错误，请联系管理员!")
 })
 const search = () => {
   console.log("我被调用，马上进行搜索~~")
@@ -108,7 +100,7 @@ const loginCancel =()=>{
   store.commit("loginSwitch",false)
 }
 // 时间戳
-console.log(new Date().getTime())
+// console.log(new Date().getTime())
 // 表单验证接口
 interface userInfo {
   phone: any
@@ -135,7 +127,7 @@ const logimrole = reactive({
 })
 // 验证账号规则
 const emailmrole = reactive({
-  email: [{}],
+  email: [{required:'true',message:'输入合法电话',trigger:'blur',pattern:' /^(?:\\w+\\.?)\\w+@(?:\\w+\\.)+\\w+$/'}],
   password: [{}]
 })
 //获取登录状态
@@ -143,17 +135,18 @@ const login = store.state.login
 // 定义登录接口
 const sign = () => {
   request.post("/login/cellphone", loginForm).then(res => {
-    localStorage.setItem('cookie', res.data.cookie)
     if (res.data.code == 200) {
+      localStorage.setItem('cookie', res.data.cookie)
+      ElMessage.success("登录成功")
       store.commit("userInfo", res.data.profile)
       store.commit("login", false)
       store.commit("loginSwitch",false)
       location.reload()
+    }else{
+      ElMessage.error(res.data.msg)
     }
   })
 }
-
-
 // 退出登录
 const logout = () => {
   request.get("/logout").then(res => {
@@ -194,7 +187,3 @@ span>a {
   padding: 10px;
 }
 </style>
-
-function qrcode(record: any) {
-  throw new Error('Function not implemented.');
-}

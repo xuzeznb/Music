@@ -15,8 +15,8 @@
                   border-radius: 50%;
                   background-color: blue;
                 ">
-                <iconPlay v-if="play" style="margin-left: 10px; margin-top: 10px" />
-                <!-- <audio :ref="audio" :src="songUrl"></audio> -->
+                <iconPlay v-if="play" @click="playMusic" style="margin-left: 10px; margin-top: 10px" />
+                 <audio :ref="audio" :src="songUrl"></audio>
               </span>
             </div>
           </div>
@@ -90,7 +90,7 @@
             </div>
           </div>
         </div>
-      </div> 
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -101,8 +101,10 @@ import request from "../config/request";
 import store from "../store";
 import music from "../components/music.vue";
 import { useRouter } from 'vue-router';
+import IconDownload from "../components/icon/icon-download.vue";
 export default {
   components: {
+    IconDownload,
     iconPlay,
     music,
   },
@@ -136,6 +138,14 @@ export default {
       const a = res.data.albums
       state.Album=a.splice(0,10)
     })
+    const audio:any = ref(null)
+    //音乐播放
+    const playMusic = ()=>{
+      store.commit('play')
+    }
+    const musicPause = () => {
+      store.commit('pause')
+    }
     const state: any = reactive({
       songslist: "",
       sentlist: "",
@@ -147,6 +157,8 @@ export default {
       state,
       songplay,
       cookie,
+      playMusic,
+      musicPause,
     };
   },
 };
