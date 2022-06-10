@@ -1,12 +1,12 @@
 <template>
-  <el-row v-if="cookie!=null">
+  <el-row v-cloak>
     <el-col :span="12">
       <div class="grid-content bg-purple" style="display: flex; justify-content: center; margin-top: 60px">
         <div class="auioplay">
           <div style="height: 140px">
             <div style="color: blue; display: flex; margin-left: 20px">
               <span style="margin-top: 60px">
-                <br /><a> 每日推荐歌曲<br />15首</a></span>
+                <br/><a> 每日推荐歌曲<br/>15首</a></span>
               <span style="
                   margin-left: 100px;
                   margin-top: 80px;
@@ -15,8 +15,7 @@
                   border-radius: 50%;
                   background-color: blue;
                 ">
-                <iconPlay v-if="play" @click="playMusic" style="margin-left: 10px; margin-top: 10px" />
-                 <audio :ref="audio" :src="songUrl"></audio>
+                <iconPlay v-if="play" style="margin-left: 10px; margin-top: 10px" @click="playMusic"/>
               </span>
             </div>
           </div>
@@ -34,7 +33,7 @@
                     height: 50px;
                     float: left;
                     border-radius: 20%;
-                  " />
+                  "/>
                 <a @click="songplay(item.al.id)">{{ item.name }}</a>
               </a>
             </span>
@@ -42,11 +41,11 @@
         </div>
       </div>
     </el-col>
-     <el-col :span="24">
+    <el-col :span="24">
       <div style="width: 100%;">
-      <div style="display: flex;width: 500px; justify-content: center;">
-        <h2 style="margin-bottom: 20px;">最新歌单</h2>
-      </div>
+        <div style="display: flex;width: 500px; justify-content: center;">
+          <h2 style="margin-bottom: 20px;">最新歌单</h2>
+        </div>
         <div style="display: flex; justify-content: center">
           <div style="width: 1300px; height: 500px">
             <div v-for="itemlist in state.sentlist" :key="itemlist.id">
@@ -59,7 +58,8 @@
                   "></el-image>
                 <div style="height: 60px; width: 200px">
                   <router-link :to="`/songlist?id=${itemlist.id}`" href="javascript:;"
-                    style="color: black; text-decoration: none">{{ itemlist.name }}</router-link>
+                               style="color: black; text-decoration: none">{{ itemlist.name }}
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -68,10 +68,10 @@
       </div>
     </el-col>
     <el-col :span="24" style="margin-top: 60px;">
-       <div style="width: 100%;">
+      <div style="width: 100%;">
         <div style="display: flex;width: 500px; justify-content: center;">
-        <h2 style="margin-bottom: 20px;">最新专辑</h2>
-      </div>
+          <h2 style="margin-bottom: 20px;">最新专辑</h2>
+        </div>
         <div style="display: flex; justify-content: center">
           <div style="width: 1300px; height: 500px">
             <div v-for="items in state.Album" :key="items.id">
@@ -84,7 +84,8 @@
                   "></el-image>
                 <div style="height: 60px; width: 200px">
                   <router-link :to="`/album?id=${items.id}`" href="javascript:;"
-                    style="color: black; text-decoration: none">{{ items.name }}</router-link>
+                               style="color: black; text-decoration: none">{{ items.name }}
+                  </router-link>
                 </div>
               </div>
             </div>
@@ -95,13 +96,14 @@
   </el-row>
 </template>
 <script lang="ts">
-import { reactive, ref } from "vue";
+import {reactive, ref} from "vue";
 import iconPlay from "../components/icon/icon-play.vue";
 import request from "../config/request";
 import store from "../store";
 import music from "../components/music.vue";
-import { useRouter } from 'vue-router';
 import IconDownload from "../components/icon/icon-download.vue";
+import musicPlayer from "../store/musicPlayer";
+
 export default {
   components: {
     IconDownload,
@@ -109,7 +111,8 @@ export default {
     music,
   },
   setup(context: any, props: any) {
-    const songplay = (id: any) => { };
+    const songplay = (id: any) => {
+    };
     // 每日推荐播放
     const play = ref(true);
     // 获取本地保存的用户信息
@@ -134,23 +137,23 @@ export default {
       }
       state.sentlist = reclist.splice(0, 10);
     });
-    request.get("/album/newest").then(res=>{
+    request.get("/album/newest").then(res => {
       const a = res.data.albums
-      state.Album=a.splice(0,10)
+      state.Album = a.splice(0, 10)
     })
-    const audio:any = ref(null)
+    const audio: any = ref(null)
     //音乐播放
-    const playMusic = ()=>{
-      store.commit('play')
+    const playMusic = () => {
+      musicPlayer.commit('play')
     }
     const musicPause = () => {
-      store.commit('pause')
+      musicPlayer.commit('pause')
     }
     const state: any = reactive({
       songslist: "",
       sentlist: "",
       songid: "",
-      Album:''
+      Album: ''
     });
     return {
       play,
@@ -175,5 +178,9 @@ export default {
   border: none;
   padding: 0 20px;
   font-size: 13px;
+}
+
+[v-cloak] {
+  display: none;
 }
 </style>

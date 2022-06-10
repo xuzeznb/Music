@@ -1,24 +1,11 @@
 <template>
-    <div>
-      <audio v-if="showAudio"
-             ref="audioRef"
-             class="bgMusic"
-             :autoplay="true"
-             controls
-             style="display: none"
-             @ended="overAudio"
-             @pause="onPause"
-             @play="onPlay"
-      >
-      </audio>
-    </div>
+  <audio ref="PlayMusic"
+  ></audio>
 </template>
 <script lang="ts" setup>
 import {ref} from "vue";
-const audioRef:any =ref(null)
-const showAudio = ref(true)
 
-
+const PlayMusic: any = ref(null)
 
 
 </script>
