@@ -14,8 +14,8 @@
                   height: 40px;
                   border-radius: 50%;
                   background-color: blue;">
-                <Iconplay style="margin-left: 10px; margin-top: 10px"/>
-                <!--                 <audio :ref="audio" :src="songUrl"></audio>-->
+                <IconPlayWhite style="margin-left: 10px; margin-top: 10px" @click="playall"/>
+                <IconPauseWhite style="margin-left: 10px; margin-top: 10px"/>
               </span>
             </div>
           </div>
@@ -34,7 +34,7 @@
                     float: left;
                     border-radius: 20%;
                   "/>
-                <a @click="songplay(item.al.id)">{{ item.name }}</a>
+                <a @click="play(item.id)">{{ item.name }}</a>
               </a>
             </span>
           </div>
@@ -97,9 +97,12 @@
 </template>
 <script lang="ts" setup>
 import {recommendedStations, userPlaylist, userSong} from "../utils/api";
-import Iconplay from '../components/icon/icon-play.vue'
+import {usePlayerStore} from '../store/player'
 import {ref} from "vue";
+import IconPlayWhite from "../components/icon/icon-play-white.vue";
+import IconPauseWhite from "../components/icon/icon-pause-white.vue";
 
+const {play, pushPlayList} = usePlayerStore();
 const playlistsong = ref()
 const playPlaylist = ref()
 const radioPlaylist = ref()
@@ -112,6 +115,11 @@ userPlaylist().then(res => {
 recommendedStations().then(res => {
   radioPlaylist.value = res
 })
+const playall = () => {
+  pushPlayList(false, ...playlistsong.value)
+  play(playlistsong.value.first().id)
+}
+
 </script>
 <style scoped>
 .auioplay {

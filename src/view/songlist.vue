@@ -63,13 +63,13 @@
         </el-col>
         <el-col :span="24" style="margin-top: 40px;">
           <el-tabs v-model="activeName" class="demo-tabs" lazy>
-            <el-tab-pane :label="'歌曲'+ playlistDetails?.trackCount " name="first">
+            <el-tab-pane :label="'歌曲'+ playlistDetails?.trackCount || '歌单' " name="first">
               <el-table ref="table" v-loading="loading" :data="songs" :element-loading-spinner="svg"
                         :highlight-current-row="true"
-                        :max-height="heght" element-loading-background="#fff"
+                        :max-height="height" element-loading-background="#fff"
                         element-loading-svg-view-box="-10, -10, 50, 50" element-loading-text="加载中..."
                         empty-text="列表为空！"
-                        height="510"
+                        height="480"
                         ighlight-current-row="true"
                         style="width: 100%" @cell-dblclick="broadcast">
                 <el-table-column type="index" width="50">
@@ -125,6 +125,17 @@
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
+              <div v-for="item in commentArea?.comments" style="display:flex;padding: 10px;">
+                <el-image :src="item.user?.avatarUrl" style="width: 60px;height: 60px;border-radius: 50%"></el-image>
+                <small style="margin-top: 15px;padding:0 5px "><a style="color: blue">{{ item.user?.nickname }}:</a>>
+                  {{ item?.content }}
+                  <br/>
+                  <small style="color:#a1a1a0;">{{ item?.timeStr }}</small>
+                </small>
+              </div>
+              <div>
+
+              </div>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -160,7 +171,7 @@ const svg = `
       `
 const activeName = ref('first')
 const star = ref(true)
-const heght = ref()
+const height = ref(null)
 const playAll = () => {
   pushPlayList(false, ...songs.value)
   play(songs.value.first().id)
