@@ -1,49 +1,60 @@
 <template>
-  <div style="display:flex ;justify-content: center;width: 100%;">
-    <div style="width: 1000px;height: 500px;padding-top: 20px;">
+  <div v-cloak style="display:flex ;justify-content: center;width: 100%;">
+    <div style="width: 1100px;height: 500px;padding-top: 20px;">
       <el-row>
         <el-col :span="6">
-          <el-image  :src="state.avatarUrl" style="width: 200px;height: 200px;float: right;" />
+          <el-image :src="playlistDetails?.coverImgUrl" lazy style="width: 200px;height: 200px;float: right;"/>
         </el-col>
-      <el-col :span="18">
-        <h3 style="margin-top: 5px;padding-left:20px;height: 40px;">
-          <a style="border:1px solid orange ; color: orange;font-size: 15px;padding: 0 5px;border-radius: 10%; ">歌单</a>
-            {{ state.playlist }}
-        </h3>
-      <div style="padding-left:15px; ">
-        <div style="display: flex;">
-          <el-image :src="state.useravatarUrl" style="width:30px;height: 30px;border-radius: 50%;" />
-          <el-image v-if="state.identityIconUrl != null" :src="state.identityIconUrl"
-                    style="width:15px;height: 15px;margin-top: 15px;position:absolute;top:45px;left:285px;" />
+        <el-col :span="18">
+          <h3 style="margin-top: 5px;padding-left:20px;height: 40px;">
+            <a style="border:1px solid orange ; color: orange;font-size: 15px;padding: 0 5px;border-radius: 10%; ">歌单</a>
+            {{ playlistDetails?.name || playlistDetails?.name === '' }}
+          </h3>
+          <div style="padding-left:15px; ">
+            <div style="display: flex;">
+              <el-image :src="playlistDetails?.creator.avatarUrl" lazy
+                        style="width:30px;height: 30px;border-radius: 50%;"/>
+              <el-image
+                  v-if="playlistDetails?.creator.avatarDetail"
+                  :src="playlistDetails?.creator.avatarDetail.identityIconUrl" lazy
+                  style="width:15px;height: 15px;margin-top: 15px;position:absolute;top:45px;left:310px;"/>
               <!-- TODO: 主页的跳转 -->
-          <router-link :to="`/userInfo?id=${state.userId}`"
-                style="text-decoration:none;line-height: 30px; font-size: 15px; padding: 0 5px;">
-                {{state.nickname}}
+              <router-link :to="`/userInfo?id=${playlistDetails?.userId}`"
+                           style="text-decoration:none;line-height: 30px; font-size: 15px; padding: 0 5px;">
+                {{ playlistDetails?.creator.nickname }}
               </router-link>
-        </div>
-          <div style="padding-top:15px;height: 105px; overflow: hidden;">
+            </div>
+            <div style="padding-top:15px;height: 105px; overflow: hidden;">
               <span>
-                <el-button>
-                  <a v-if="star"><IconStar />收藏</a>
-                  <a v-if="!star"><IconStar2 />已收藏</a>
+                <el-button @click="playAll">
+                  <small><IconPlayWhite/>播放全部</small>
                 </el-button>
                 <el-button>
-                  <el-icon><Share /></el-icon> 分享
+                  <a v-show="star"><IconStar/>收藏</a>
+                  <a v-show="!star"><IconStar2/>已收藏</a>
                 </el-button>
+                <el-button>
+                  <el-icon><Share/></el-icon> 分享
+                </el-button>
+
               </span>
-              <br />
+              <br/>
               <span style="margin-top:5px;line-height: 25px;">
                 <a style="font-size:13px;">标签：</a>
-                  <a href="JavaScript:;" v-for="tag in state.tags" :key="tag.id"
-                     style="text-decoration: none;font-size: 13px;color: blue;"> {{ tag + "、" }}
+                  <a v-for="tag in playlistDetails?.tags" :key="tag.id" href="JavaScript:;"
+                     style="text-decoration: none;font-size: 13px;color: black"> {{ "#" + tag }}
                   </a>
-                <br />
-                <a style="font-size:13px;color: black;">歌曲: {{  }} &nbsp; 播放：{{ state.playCount }} </a>
-                <br />
-                <el-popover placement="top-start" title="简介" :width="500" trigger="hover"
-                    :content=" state.description ">
+                <br/>
+                <a style="font-size:13px;color: black;">歌曲: {{
+                    playlistDetails?.trackCount
+                  }} &nbsp; 播放：{{ useNumberFormat(playlistDetails?.playCount) }} </a>
+                <br/>
+                <el-popover :content=" playlistDetails?.description " :width="500" placement="top-start" title="简介"
+                            trigger="hover">
                   <template #reference>
-                <a style="font-size: 13px;height: 20px;  " @mouseenter="leave"  > 简介：{{ state.description}}</a>
+                    <a style="font-size: 13px;height: 20px;  " @mouseenter="leave"> 简介：{{
+                        playlistDetails?.description
+                      }}</a>
                   </template>
                 </el-popover>
               </span>
@@ -51,86 +62,69 @@
           </div>
         </el-col>
         <el-col :span="24" style="margin-top: 40px;">
-          <el-tabs lazy v-model="activeName" class="demo-tabs">
-            <el-tab-pane label="音乐列表" name="first">
-              <el-table :data="state.tableData" ref="table"  height="550" v-loading="state.loading"
-                element-loading-text="加载中..." :element-loading-spinner="svg"
-                element-loading-svg-view-box="-10, -10, 50, 50" element-loading-background="rgba(122, 122, 122, 0.8)"
-                :max-height="heght" style="width: 100%">
+          <el-tabs v-model="activeName" class="demo-tabs" lazy>
+            <el-tab-pane :label="'歌曲'+ playlistDetails?.trackCount " name="first">
+              <el-table ref="table" v-loading="loading" :data="songs" :element-loading-spinner="svg"
+                        :highlight-current-row="true"
+                        :max-height="heght" element-loading-background="#fff"
+                        element-loading-svg-view-box="-10, -10, 50, 50" element-loading-text="加载中..."
+                        empty-text="列表为空！"
+                        height="510"
+                        ighlight-current-row="true"
+                        style="width: 100%" @cell-dblclick="broadcast">
                 <el-table-column type="index" width="50">
                 </el-table-column>
-                <el-table-column prop="name" :show-overflow-tooltip="true" label="歌单" width="200">
+                <el-table-column :show-overflow-tooltip="true" label="歌单" width="260">
+                  <template #default="Song">
+                    <div>
+                      <a v-show="Song.row.originCoverType === 1"
+                         style="border: 1px solid #c05a5a; user-select: none;font-size:10px; color: #c05a5a;padding: 1px">原唱</a>
+                      <a v-show="Song.row.originCoverType === 2"
+                         style="border: 1px solid orange;color: orange; user-select: none;font-size:10px; padding: 1px">翻唱</a>
+                      <a v-show="Song.row.originCoverType === 0"
+                         style="border: 1px solid #a1a1a0;color: #a1a1a0;padding: 1px; user-select: none;font-size:10px;">未知</a>
+                      <small style="padding-left: 5px;  user-select: none;">{{ Song.row.name }}</small>
+                    </div>
+                    <div>
+                    </div>
+                  </template>
                 </el-table-column>
                 <el-table-column label="歌手" width="280">
                   <template #default="aaaa">
                     <div v-for="a in aaaa.row.ar" :key="a" class="author">
-                      <router-link :to="`/singer?id=${a.id}`" style="float: left;text-decoration: none;color:#606266;">{{a.name+"~"}}</router-link>
+                      <router-link :to="`/singer?id=${a.id}`"
+                                   style="user-select: none; float: left;text-decoration: none;color:#606266;">
+                        <small> {{ a.name + " -" }}</small>
+                      </router-link>
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column label="是否原唱" width="180">
-                  <template #default="scope">
-                    <div v-if="scope.row.originCoverType == 1">
-                      原创
-                    </div>
-                    <div v-if="scope.row.originCoverType == 2">
-                      翻唱
-                    </div>
-                    <div v-if="scope.row.originCoverType == 0">
-                      未知
+                <el-table-column :show-overflow-tooltip="true" label="专辑"
+                                 width="180">
+                  <template #default="album">
+                    <div>
+                      <small>
+                        {{ album.row.al.name }}
+                      </small>
                     </div>
                   </template>
                 </el-table-column>
-                <el-table-column prop="al.name"  :show-overflow-tooltip="true" label="专辑" width="180" />
+                <el-table-column label="时间" width="120">
+                  <template #default="Time">
+                    <small style=" user-select: none;"> {{ useFormatDuring(Time.row.dt / 1000) }}</small>
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作" width="150">
+                  <div>
+                    <a style=" user-select: none;">
+                      <IconPlay/>
+                    </a>
+                  </div>
+                </el-table-column>
+
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
-              <div>
-                <span>
-                  <div v-if="state.hotComments !=null">
-                  <h4>精彩评论</h4>
-                  <div v-for="content in state.hotComments">
-                    <div style="width:1000px;display: flex;padding:10px">
-                    <el-image :src="content.user.avatarUrl" style="width: auto;height:70px; border-radius: 50%;"></el-image>
-                      <span style="font-size: 13px;padding: 5px;">
-                        <a style="color:lawngreen">
-                        {{content.user.nickname}}</a>:
-                        <a style="padding-left: 2px;">
-                          {{content.content}}
-                        </a>
-                      <br/>
-                     <a style="color: #a1a1a0">{{content.timeStr}}</a>
-                      </span>
-                    </div>
-                  </div>
-                    <div style="display: flex;justify-content: center">
-                    <el-button style="border-radius: 50px;">查看全部评论 ></el-button>
-                    </div>
-                  </div>
-                  <div style="margin-top: 10px;">
-                    <h4>最新评论</h4>
-                    <div v-for="content in state.comments">
-                    <div style="width:1000px;display: flex;padding:10px">
-                    <el-image :src="content.user.avatarUrl" style="width: auto;height:70px; border-radius: 50%;"></el-image>
-                      <span style="font-size: 13px;padding: 5px;">
-                        <a style="color:lawngreen">
-                        {{content.user.nickname}}</a>:
-                        <a style="padding-left: 2px;">
-                          {{content.content}}
-                        </a>
-                      <br/>
-                     <a style="color: #a1a1a0">{{content.timeStr}}</a>
-                      </span>
-                    </div>
-                  </div>
-                    <div style="display: flex;justify-content: center">
-                    <el-button style="border-radius: 50px;">查看全部评论 ></el-button>
-                    </div>
-                  </div>
-                </span>
-              </div>
-              <div>
-              </div>
             </el-tab-pane>
           </el-tabs>
         </el-col>
@@ -139,20 +133,21 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import request from '../config/request'
+import {ref} from 'vue';
+import {useRoute} from 'vue-router';
+import {useFormatDuring, useNumberFormat} from '../utils/number'
 import IconStar2 from '../components/icon/icon-star2.vue';
 import IconStar from '../components/icon/icon-star.vue';
-import Music from "../components/music.vue";
-import {ElMessage} from "element-plus";
-const state: any = reactive({})
-state.loading = ref(true)
-onMounted(() => {
-  setTimeout(() => {
-    state.loading = false
-  }, 2000)
-})
+import {comment, playlistInformation, playlistSong} from "../utils/api";
+import {useUserStore} from "../store/user";
+import IconPlay from "../components/icon/icon-play.vue";
+import {usePlayerStore} from '../store/player'
+import IconPlayWhite from "../components/icon/icon-play-white.vue";
+
+const {play, pushPlayList} = usePlayerStore()
+
+const {openLoad} = useUserStore()
+
 const svg = `
         <path class="path" d="
           M 30 15
@@ -166,42 +161,32 @@ const svg = `
 const activeName = ref('first')
 const star = ref(true)
 const heght = ref()
+const playAll = () => {
+  pushPlayList(false, ...songs.value)
+  play(songs.value.first().id)
+}
 let route = useRoute();
-const table: any = ref(null)
-console.log(table)
-let id = route.query.id
-let cookie = localStorage.cookie
-const time = new Date().getTime()
+let id: any = route.query.id
 // 获取歌单的全部歌曲
-request.get("playlist/track/all?id="+id).then(res => {
-  if(res.data.code== 200) {
-    state.tableData = res.data.songs
-  }else{
-    ElMessage.error("由于接口原因,歌单获取失败")
-  }
+const songs = ref()
+//获取作者信息
+const playlistDetails = ref()
+//评论
+const loading = ref()
+const commentArea = ref()
+loading.value = openLoad()
+playlistSong(id).then(res => {
+  songs.value = res
+  loading.value = false
 })
-// 获取歌单详细信息
-request.get("/playlist/detail?id=" + id +"&cookie="+cookie).then(res => {
-  if(res.data.code== 200) {
-    const playlist = res.data.playlist
-    state.playlist = playlist.name
-    state.avatarUrl = playlist.coverImgUrl
-    state.useravatarUrl = playlist.creator.avatarUrl
-    if (playlist.creator.avatarDetail) {
-      state.identityIconUrl = playlist.creator.avatarDetail.identityIconUrl
-    }
-    state.nickname = playlist.creator.nickname
-    state.playCount = playlist.playCount
-    state.description = playlist.description
-    state.tags = playlist.tags
-    state.userId = playlist.creator.userId
-  }else{
-    ElMessage.error("歌单详细获取失败")
-  }
+const broadcast = (row: any, column: any, cell: any, event: any) => {
+  play(row.id)
+}
+playlistInformation(id).then(res => {
+  playlistDetails.value = res
 })
-request.get("/comment/playlist?id=" + id ).then(res=>{
-state.hotComments =(res.data.hotComments).splice(0,10)
-  state.comments=(res.data.comments).splice(0,15)
+comment(id).then(res => {
+  commentArea.value = res
 })
 </script>
 <style>
@@ -209,7 +194,8 @@ state.hotComments =(res.data.hotComments).splice(0,10)
   margin: 0;
   padding: 0;
 }
-.el-tabs__nav-wrap::after{
+
+.el-tabs__nav-wrap::after {
   background-color: #fff;
 }
 </style>
