@@ -1,6 +1,6 @@
 <template>
   <div v-cloak style="display:flex ;justify-content: center;width: 100%;">
-    <div style="width: 1100px;height: 500px;padding-top: 20px;">
+    <div style="width: 900px;height: 500px;padding-top: 20px;">
       <el-row>
         <el-col :span="6">
           <el-image :src="playlistDetails?.coverImgUrl" lazy style="width: 200px;height: 200px;float: right;"/>
@@ -8,7 +8,7 @@
         <el-col :span="18">
           <h3 style="margin-top: 5px;padding-left:20px;height: 40px;">
             <a style="border:1px solid orange ; color: orange;font-size: 15px;padding: 0 5px;border-radius: 10%; ">歌单</a>
-            {{ playlistDetails?.name || playlistDetails?.name === '' }}
+            {{ playlistDetails?.name || '未知名歌单' }}
           </h3>
           <div style="padding-left:15px; ">
             <div style="display: flex;">
@@ -17,11 +17,10 @@
               <el-image
                   v-if="playlistDetails?.creator.avatarDetail"
                   :src="playlistDetails?.creator.avatarDetail.identityIconUrl" lazy
-                  style="width:15px;height: 15px;margin-top: 15px;position:absolute;top:45px;left:310px;"/>
-              <!-- TODO: 主页的跳转 -->
+                  style="width:15px;height: 15px;margin-top: 15px;position:absolute;top:45px;left:260px;"/>
               <router-link :to="`/userInfo?id=${playlistDetails?.userId}`"
                            style="text-decoration:none;line-height: 30px; font-size: 15px; padding: 0 5px;">
-                {{ playlistDetails?.creator.nickname }}
+                {{ playlistDetails?.creator.nickname || '未知名歌手' }}
               </router-link>
             </div>
             <div style="padding-top:15px;height: 105px; overflow: hidden;">
@@ -36,7 +35,6 @@
                 <el-button>
                   <el-icon><Share/></el-icon> 分享
                 </el-button>
-
               </span>
               <br/>
               <span style="margin-top:5px;line-height: 25px;">
@@ -52,7 +50,7 @@
                 <el-popover :content=" playlistDetails?.description " :width="500" placement="top-start" title="简介"
                             trigger="hover">
                   <template #reference>
-                    <a style="font-size: 13px;height: 20px;  " @mouseenter="leave"> 简介：{{
+                    <a style="font-size: 13px;height: 20px;" @mouseenter="leave"> 简介：{{
                         playlistDetails?.description
                       }}</a>
                   </template>
@@ -91,10 +89,10 @@
                 </el-table-column>
                 <el-table-column label="歌手" width="280">
                   <template #default="aaaa">
-                    <div v-for="a in aaaa.row.ar" :key="a" class="author">
-                      <router-link :to="`/singer?id=${a.id}`"
+                    <div>
+                      <router-link :to="`/singer?id=${aaaa.row.ar.id}`"
                                    style="user-select: none; float: left;text-decoration: none;color:#606266;">
-                        <small> {{ a.name + " -" }}</small>
+                        <small> {{ aaaa.row.ar?.first().name }}</small>
                       </router-link>
                     </div>
                   </template>
@@ -114,14 +112,6 @@
                     <small style=" user-select: none;"> {{ useFormatDuring(Time.row.dt / 1000) }}</small>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作" width="150">
-                  <div>
-                    <a style=" user-select: none;">
-                      <IconPlay/>
-                    </a>
-                  </div>
-                </el-table-column>
-
               </el-table>
             </el-tab-pane>
             <el-tab-pane label="音乐评论" name="second">
@@ -134,7 +124,6 @@
                 </small>
               </div>
               <div>
-
               </div>
             </el-tab-pane>
           </el-tabs>
@@ -149,9 +138,8 @@ import {useRoute} from 'vue-router';
 import {useFormatDuring, useNumberFormat} from '../utils/number'
 import IconStar2 from '../components/icon/icon-star2.vue';
 import IconStar from '../components/icon/icon-star.vue';
-import {comment, playlistInformation, playlistSong} from "../utils/api";
+import {comment, playlistInformation, playlistSong,} from "../utils/api";
 import {useUserStore} from "../store/user";
-import IconPlay from "../components/icon/icon-play.vue";
 import {usePlayerStore} from '../store/player'
 import IconPlayWhite from "../components/icon/icon-play-white.vue";
 

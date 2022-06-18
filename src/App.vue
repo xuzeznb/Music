@@ -1,6 +1,8 @@
 <template v-cloak>
   <HelloWorld/>
-  <router-view></router-view>
+  <div class="content">
+    <router-view></router-view>
+  </div>
   <div class="bottom">
     <Music/>
   </div>
@@ -15,6 +17,10 @@ userPlayerInit()
 </script>
 
 <style>
+.content {
+  margin-bottom: 100px;
+}
+
 .bottom {
   bottom: 0;
   position: fixed;

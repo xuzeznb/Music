@@ -50,8 +50,16 @@ const routes = [
       menu: '推荐',
       keepAlive: true,
     }
+  },
+  {
+    name: 'songDetails',
+    path: '/songDetails',
+    component: () => import('../view/songDetails.vue'),
+    meta: {
+      menu: '歌词界面',
+      keepAlive: true,
+    }
   }
 
 ];
-
 export default routes

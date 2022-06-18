@@ -27,7 +27,7 @@
         <div v-for="item in playlistsong" :key="item.id">
           <div style="width: 200px; height: 60px; float: left">
             <span style="padding: 10px; margin-top: 10px">
-              <a href="javascript:;" style="text-decoration: none; color: black">
+              <a style="text-decoration: none;cursor: pointer; color: black">
                 <el-image :src="item.al.picUrl" lazy style="
                     width: 50px;
                     height: 50px;
@@ -57,8 +57,8 @@
                     margin-bottom: 5px;
                   "></el-image>
                 <div style="height: 60px; width: 200px">
-                  <router-link :to="`/songlist?id=${itemlist.id}`" href="javascript:;"
-                               style="color: black; text-decoration: none">{{ itemlist.name }}
+                  <router-link :to="`/songlist?id=${itemlist.id}`"
+                               style="color: black; cursor: pointer; text-decoration: none">{{ itemlist.name }}
                   </router-link>
                 </div>
               </div>
@@ -83,8 +83,8 @@
                     margin-bottom: 5px;
                   "></el-image>
                 <div style="height: 60px; width: 200px">
-                  <router-link :to="`/album?id=${items.id}`" href="javascript:;"
-                               style="color: black; text-decoration: none">{{ items.name }}
+                  <router-link :to="`/album?id=${items.id}`"
+                               style="color: black;cursor: pointer; text-decoration: none">{{ items.name }}
                   </router-link>
                 </div>
               </div>

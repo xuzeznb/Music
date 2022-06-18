@@ -80,3 +80,10 @@ export interface SongL {
   size: number;
   vd: number;
 }
+
+export interface hots {
+  first: string,
+  second: number,
+  third: boolean,
+  iconType: string
+}

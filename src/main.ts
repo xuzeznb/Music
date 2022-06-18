@@ -11,7 +11,7 @@ import {createPinia} from "pinia";
 import VueLazyload from 'vue-lazyload'
 
 const app: any = createApp(App)
-
+app.config.devtools = true
 app.use(ElementPlus)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

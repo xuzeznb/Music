@@ -54,7 +54,7 @@
                 <el-table-column label="作者" width="280">
                   <template #default="information">
                     <div v-for="a in information.row.ar" :key="a" class="author">
-                      <a href="javascript:;" style="float: left;text-decoration: none;color:#606266;">{{
+                      <a style="float: left; cursor: pointer;text-decoration: none;color:#606266;">{{
                           a.name + "~"
                         }}</a>
                     </div>

@@ -16,17 +16,17 @@
             </el-image>
             <a style="padding-left: 10px">{{ Info?.mainAuthType.desc }}</a>
           </a>
-          <a v-show="Level" href="javascript:;" style="padding-left: 10px;
+          <a v-show="Level" style="padding-left: 10px;
             border-radius: 10px">
             LV{{ Level?.level }}
           </a>
-          <a v-show="Info?.gender === 1" href="javascript:;" style="padding-left: 10px;">
+          <a v-show="Info?.gender === 1" style="padding-left: 10px;cursor: pointer;">
             <el-icon :size="13" color="rgb(131,204,234)"
                      style="background-color: rgb(192,243,255);border-radius:50% ; ">
               <Male/>
             </el-icon>
           </a>
-          <a v-show="Info?.gender === 2" href="javascript:;" style="padding-left: 10px;">
+          <a v-show="Info?.gender === 2" style="cursor: pointer; padding-left: 10px;">
             <el-icon :size="13" color="red" style="background-color: rgb(255,205,232);border-radius:50% ; ">
               <Female/>
             </el-icon>
@@ -42,11 +42,11 @@
         </div>
         <div class="userInfodetailed">
                   <span>
-                    <a href="javascript:;">社交平台:{{}}</a>
+                    <a>社交平台:{{}}</a>
                   </span>
           <br/>
           <span style="margin-top: 20px;">
-                    <a href="javascript:;">简介: {{ Info?.signature }}</a>
+                    <a>简介: {{ Info?.signature }}</a>
           </span>
         </div>
       </div>

@@ -10,7 +10,8 @@ export const useUserStore = defineStore('user', {
       showLogin: false,
       profile: {} as useProfile,
       dialogTableVisible: false,
-      loading: true
+      loading: true,
+      searchof: ''
     }
   },
   getters: {
@@ -44,8 +45,8 @@ export const useUserStore = defineStore('user', {
     async openLoad() {
       this.loading = true
     },
-    async closeLoading() {
-      this.loading = false
+    async userSearch() {
+      // const data = await search()
     }
 
   }

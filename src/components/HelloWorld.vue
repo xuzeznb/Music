@@ -6,24 +6,25 @@
     </el-col>
     <el-col :span="6">
       <div style="line-height: 20px;display: flex;justify-content: center;">
-        <router-link href="javascript:;" style="padding: 25px;color:black; text-decoration: none;" to="mymusic">我的
+        <router-link style="padding: 25px;cursor: pointer; color:black; text-decoration: none;" to="mymusic">我的
         </router-link>
-        <router-link href="javascript:;" style="padding: 25px;color:black; text-decoration: none;" to="recommend">推荐
+        <router-link style="padding: 25px;cursor: pointer; color:black; text-decoration: none;" to="recommend">推荐
         </router-link>
-        <router-link href="javascript:;" style="padding: 25px;color:black; text-decoration: none;" to="">动态
+        <router-link style="padding: 25px;cursor: pointer;color:black; text-decoration: none;" to="">动态
         </router-link>
       </div>
     </el-col>
     <el-col :span="6" style="line-height:60px;">
       <span style="width:80px;">
-        <el-input :prefix-icon="Search" placeholder="请输入搜索的歌曲" placeholder-class="el-icon-search"
+        <el-input v-model="searchContent" :prefix-icon="Search" placeholder="请输入搜索的歌曲"
+                  placeholder-class="el-icon-search"
                   style="width:200px;border-radius:10px"
-                  type="text" @keyup.enter="search"></el-input>
+                  type="text" @keyup.enter="searchs"></el-input>
       </span>
     </el-col>
     <el-col :span="6" style="width: 100%">
       <span style="width: 300px;line-height: 50px">
-        <a v-show="!isLogin" href="javascript:;" style="" @click="openlogin">登录</a>
+        <a v-show="!isLogin" style="cursor: pointer" @click="openlogin">登录</a>
         <el-dropdown>
           <div style="display:flex;line-height: 50px">
             <el-image v-show="isLogin" :src="profile?.avatarUrl??'' " lazy
@@ -65,7 +66,7 @@
             <el-tab-pane label="第三方登录" name="fourth">Task</el-tab-pane>
           </el-tabs>
         </el-dialog>
-        <a v-show="!isLogin" href="javascript:;" style="padding: 5px;">注册</a>
+        <a v-show="!isLogin" style=" cursor: pointer; padding: 5px;">注册</a>
       </span>
     </el-col>
   </div>
@@ -77,9 +78,10 @@ import {useUserStore} from "../store/user";
 import {storeToRefs} from "pinia";
 import {signOut} from "../utils/api";
 import {ElMessage} from "element-plus";
+import router from "../router";
 
 const {login, openPopup, closePopup, checkLogin} = useUserStore()
-const {dialogTableVisible, profile, isLogin} = storeToRefs(useUserStore())
+const {dialogTableVisible, profile, isLogin, searchof} = storeToRefs(useUserStore())
 const activeName = ref('first')
 //打开弹窗
 const openlogin = () => {
@@ -96,13 +98,14 @@ const sign = () => {
 onMounted(() => {
   checkLogin()
 })
-
 //搜索
-const search = () => {
-  console.log("我被调用，马上进行搜索~~")
+const searchs = () => {
+  router.push({path: "/search", query: {name: searchContent.value}})
 }
+//搜索内容
+let searchContent = ref('');
 
-// 表单验证接口
+//表单验证接口
 interface userInfo {
   phone: string
   password: string
@@ -156,6 +159,10 @@ const emaillogin = () => {
   // const state: any = reactive({
   //   loginUrl: ''
   // })
+}
+
+interface LinkItem {
+  first: string
 }
 
 </script>

@@ -62,10 +62,10 @@
               >
                 <el-table-column type="index" width="50"/>
                 <el-table-column label="操作" width="100">
-                  <a href="javascript:;">
+                  <a style="cursor: pointer;">
                     <icon-like/>
                   </a>
-                  <a href="javascript:;" style="padding-left: 8px" @click="download">
+                  <a style="cursor: pointer;padding-left: 8px" @click="download">
                     <icon-download/>
                   </a>
                 </el-table-column>

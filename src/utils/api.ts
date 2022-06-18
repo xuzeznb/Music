@@ -1,15 +1,15 @@
 import request from "../config/request";
-import {albums, banners, comment, dailySongs, playlist, recommend, result} from '../interface/songList'
+import {albums, banners, comment, dailySongs, playlist, recommend, result, searchInDetail} from '../interface/songList'
 import {useProfile} from "../interface/user";
 import {SongUrl} from "../interface/song_url";
-import {Song} from "../interface/song";
+import {hots, Song} from "../interface/song";
 
 
 //推荐歌单
 export async function recommendedPlaylist(limit: number = 8) {
   const {result} = await request.get<{
     result: result[]
-  }>('/personalized?limit=' + limit)
+  }>('/personalized', {limit: limit, page: '150y150'})
   return (result).splice(0, 8)
 }
 
@@ -17,7 +17,7 @@ export async function recommendedPlaylist(limit: number = 8) {
 export async function carousel(type: number = 0) {
   const {banners} = await request.get<{
     banners: banners[]
-  }>('/banner?type=' + type)
+  }>('/banner', {type: type, page: '318y128'})
   // 剪切前面6个图片
   return banners.splice(0, 4)
 }
@@ -26,7 +26,7 @@ export async function carousel(type: number = 0) {
 export async function newMusic(limit: number = 10) {
   const {result} = await request.get<{
     result: result[]
-  }>('/personalized/newsong', {limit: limit})
+  }>('/personalized/newsong?page=200y200', {limit: limit})
   return (result)
 }
 
@@ -72,12 +72,12 @@ export async function userPlaylist() {
   return recommend.splice(0, 10)
 }
 
-//推荐电台
+//推荐专辑
 export async function recommendedStations() {
   const {albums} = await request.get<{
     albums: albums[]
-  }>('/album/newest')
-  return albums
+  }>('/album/newest', {page: '200y200'})
+  return albums.splice(0, 10)
 }
 
 // 歌单全部歌曲
@@ -129,4 +129,34 @@ export async function useDetail(id: number) {
 
 export async function download(id: number) {
   return request.get('/song/download/url', {id: id})
+}
+
+// 热搜列表
+export async function hotSearch() {
+  const {result} = await request.get<{
+    result: {
+      hots: hots[]
+    }
+  }>('/search/hot')
+  return result.hots
+}
+
+// 搜索功能
+export async function search(keywords: any) {
+  const {result} = await request.get<{
+    result: {
+      songs: searchInDetail[]
+    }
+  }>('/search', {keywords: keywords})
+  return result
+}
+
+//歌词功能
+export async function lyric(id: number) {
+  const {lrc} = await request.get<{
+    lrc: {
+      lyric: string
+    }
+  }>('/lyric', {id: id})
+  return lrc
 }

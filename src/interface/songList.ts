@@ -361,3 +361,21 @@ export interface comment {
   hotComments: []
 }
 
+export interface searchInDetail {
+  id: number,
+  name: string,
+  artists: [
+    {
+      id: number,
+      name: string,
+    }
+  ],
+  album: {
+    id: number,
+    name: string,
+    artist: [
+      id: number,
+      name: string,
+    ],
+  }
+}

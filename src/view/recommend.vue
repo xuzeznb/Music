@@ -2,7 +2,6 @@
   <el-row v-cloak>
     <div style="width: 100%">
       <div style="width:200px;margin-top: 20px; justify-content: right;display: flex">
-        <strong style="color: rgb(51,65,85); font-size: 20px; ">推荐</strong>
       </div>
       <div style="display:flex;justify-content: center">
         <div v-for="item in Carousel" style="float: left">
@@ -22,7 +21,7 @@
         </div>
       </div>
       <div style="width:270px;margin-top: 10px; justify-content: right;display: flex">
-        <strong style="color:black">推荐今日音乐 ></strong>
+        <strong style="color:black">推荐今日音乐></strong>
       </div>
       <div>
         <!--                <el-image></el-image>-->
